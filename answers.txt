@@ -113,3 +113,19 @@ CPU can execute it. Its main responsibilities are:
   dynamic loader and resolving runtime symbol addresses.
 
 4. Initializing the program's stack and jumping to the program's entry point.
+
+4. What does the Makefile do?
+
+The Makefile automates compiling, running, and cleaning the C programs
+using GCC (`CC = gcc`):
+
+- `all` (default target): Compiles all three executables (`process_creation`,
+  `output_program`, and `simple_program`).
+- `process_creation`: Compiles `process_creation.c` into `./process_creation`.
+- `output_program`: Compiles and links `file1.c` and `file2.c` together into
+  `./output_program`.
+- `simple_program`: Compiles `simple_program.c` into `./simple_program`.
+- `run`: Ensures all executables are built, runs `./process_creation`,
+  `./output_program`, and `./simple_program`, and runs `ldd simple_program`
+  to display its dynamic library dependencies.
+- `clean`: Deletes the compiled executable files using `rm -f`.

@@ -1,6 +1,6 @@
-# CSE233 - Assignment 2: Basic forks and C Style Development
+# Assignment 2: Basic forks and C Style Development
 
-Operating Systems (CSE233) assignment demonstrating Linux process creation with `fork()`, process management commands, and the roles of the linker and loader in C development.
+OS assignment demonstrating Linux process creation with `fork()`, process management commands, and the roles of the linker and loader in C development.
 
 ## Prerequisites
 
