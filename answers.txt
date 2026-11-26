@@ -1,0 +1,115 @@
+1. Lab 5 Code Examples & Explanations
+
+- Exercise 1: Using fork() in C (process_creation.c)
+
+What it does:
+This program demonstrates process creation in Linux/POSIX using the fork()
+system call. When fork() is called, the operating system creates a new
+child process that is an almost exact duplicate of the calling (parent)
+process. Both processes continue execution from the instruction right after
+fork(), but fork() returns different values to each:
+- In the child process: fork() returns 0, so the `if (pid == 0)` branch runs
+  and prints the child's process ID using getpid().
+- In the parent process: fork() returns the positive PID of the newly
+  created child, so the `else if (pid > 0)` branch runs and prints the
+  parent's PID.
+- On failure (for example: system process limit reached) fork() returns -1, and
+  the `else` branch prints "Fork failed!".
+
+- Exercise 2: Starting Processes in the Background
+
+Commands:
+  sleep 300 &
+  jobs
+What they do:
+- `sleep 300 &` starts the `sleep` command for 300 seconds in the background
+  using the `&` operator, returning control of the terminal immediately to
+  the user.
+- `jobs` lists all background jobs started in the current shell session along
+  with their job number and status for example Running, Stopped.
+
+- Exercise 3: Stopping Processes
+
+Commands:
+  ps aux | grep sleep
+  kill <PID>
+  ps aux | grep sleep
+What they do:
+- `ps aux | grep sleep` lists all running processes (`ps aux`) and filters
+  the output with `grep sleep` to find the Process ID (PID) of the `sleep`
+  process.
+- `kill <PID>` sends the default termination signal (SIGTERM) to the process
+  with the specified PID, requesting it to terminate cleanly.
+- Running `ps aux | grep sleep` again verifies that the `sleep` process is
+  no longer running.
+
+- Exercise 4: Pausing and Resuming a Process
+Commands:
+  kill -STOP <PID>
+  kill -CONT <PID>
+What they do:
+- `kill -STOP <PID>` sends the SIGSTOP signal to pause (suspend) the
+  execution of the process without terminating it.
+- `kill -CONT <PID>` sends the SIGCONT signal to resume a paused process so
+  it continues executing from where it was stopped.
+
+- Exercise 5: Role of the Linker (file1.c and file2.c)
+
+What it does:
+This example splits a program across two C source files:
+- `file1.c` includes `<stdio.h>` and defines the function `hello()`, which
+  prints "Hello from file1!".
+- `file2.c` declares `void hello();` (a function prototype) and defines
+  `main()`, which calls `hello()`.
+When compiled together with `gcc file1.c file2.c -o output_program`, the
+compiler translates each `.c` file into object code, and the linker combines
+both object files and resolves the call to `hello()` in `file2.c` to its
+definition in `file1.c`, producing a single executable (`output_program`).
+If one file (`file1.c`) is modified and recompiled/relinked, the final
+executable reflects the updated behavior without needing to rewrite `file2.c`.
+
+- Exercise 6: Role of the Loader (simple_program.c)
+
+What it does:
+`simple_program.c` is a minimal C program that prints "This is a simple
+program." using `printf()` from `<stdio.h>`.
+Running `ldd simple_program` inspects the compiled binary and lists the
+shared libraries it depends on at runtime.
+On a typical Linux system, `ldd` shows:
+- `linux-vdso.so.1`: Virtual Dynamic Shared Object mapped by the kernel into
+  user space for fast system calls.
+- `libc.so.6`: The GNU C Standard Library, which provides `printf()` and other
+  standard C functions.
+- `/lib64/ld-linux-x86-64.so.2`: loads the required shared libraries into memory when the program starts.
+
+2. What is the job of the Linker?
+
+The linker is a system program that takes one or more object files produced
+by a compiler/translator (along with any required static or shared library
+references) and combines them into a single executable file (or library).
+Its main responsibilities are:
+
+1. Symbol Resolution: Matching external references (such as calling `hello()`
+   in `file2.c` or `printf()` from `libc`) to their actual definitions in
+   other object files or libraries.
+
+2. Relocation: Assigning final memory addresses to code and data sections
+   from all input object files and adjusting internal references/offsets so
+   everything aligns in the final executable.
+
+3. What is the job of the Loader?
+
+The loader is part of the operating system responsible for loading an
+executable file from secondary storage (disk) into main memory (RAM) so the
+CPU can execute it. Its main responsibilities are:
+
+1. Reading the executable's headers to determine the size and layout of its
+   code (text), data, and BSS segments.
+
+2. Allocating virtual memory space for the process and mapping/copying the
+   program's segments into memory.
+
+3. Loading any required dynamic/shared libraries via the
+  dynamic loader and resolving runtime symbol addresses.
+
+4. Initializing the program's stack and jumping to the program's entry point.
